@@ -27,7 +27,7 @@ uint32_t spacemesh_get_max_task_num(uint32_t device_id);
  * @param task_num The number of tasks
  * @param output Output CPU memory
  */
-void spacemesh_scrypt(uint32_t device_id, const uint64_t starting_index,
+bool spacemesh_scrypt(uint32_t device_id, const uint64_t starting_index,
                       const uint32_t* input, const uint32_t task_num,
                       uint32_t* output);
 }

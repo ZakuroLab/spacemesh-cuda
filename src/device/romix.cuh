@@ -200,8 +200,8 @@ inline __device__ void scrypt_ROMix_org(uint4 *__restrict__ X,
     }
 
     if constexpr (LOOKUP_GAP > 2) {
-      uint c = j % LOOKUP_GAP;
-      for (uint k = 0; k < c; k++) {
+      uint32_t c = j % LOOKUP_GAP;
+      for (uint32_t k = 0; k < c; k++) {
         scrypt_ChunkMix_inplace_local(W);
       }
     }
@@ -288,8 +288,8 @@ inline __device__ void scrypt_ROMix_coalesce_access_v1(
     }
 
     if constexpr (LOOKUP_GAP > 2) {
-      uint c = j % LOOKUP_GAP;
-      for (uint k = 0; k < c; k++) {
+      uint32_t c = j % LOOKUP_GAP;
+      for (uint32_t k = 0; k < c; k++) {
         scrypt_ChunkMix_inplace_local(W);
       }
     }
@@ -387,8 +387,8 @@ __device__ void scrypt_ROMix_coalesce_access_v2(uint4 *__restrict__ X,
     }
 
     if constexpr (LOOKUP_GAP > 2) {
-      uint c = j % LOOKUP_GAP;
-      for (uint k = 0; k < c; k++) {
+      uint32_t c = j % LOOKUP_GAP;
+      for (uint32_t k = 0; k < c; k++) {
         scrypt_ChunkMix_inplace_local(W);
       }
     }
@@ -489,8 +489,8 @@ __device__ void scrypt_ROMix_coalesce_access_v3(uint4 *__restrict__ X,
     }
 
     if constexpr (LOOKUP_GAP > 2) {
-      uint c = j % LOOKUP_GAP;
-      for (uint k = 0; k < c; k++) {
+      uint32_t c = j % LOOKUP_GAP;
+      for (uint32_t k = 0; k < c; k++) {
         scrypt_ChunkMix_inplace_local(W);
       }
     }

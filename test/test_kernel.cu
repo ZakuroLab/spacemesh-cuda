@@ -11,10 +11,10 @@ static bool operator==(const uint4 &u0, const uint4 &u1) {
   return u0.x == u1.x && u0.y == u1.y && u0.z == u1.z && u0.w == u1.w;
 }
 
-static __global__ void pbkdf2_128b(const uint N, const ulong starting_index,
+static __global__ void pbkdf2_128b(const uint32_t N, const ulong starting_index,
                                    const uint4 *const __restrict__ input,
                                    uint4 *const __restrict__ output,
-                                   const uint num_tasks) {
+                                   const uint32_t num_tasks) {
   uint32_t tid = blockDim.x * blockIdx.x + threadIdx.x;
   uint32_t tnum = gridDim.x * blockDim.x;
 
@@ -89,7 +89,7 @@ TEST(PBKDF2_128B, CheckResult) {
 static __global__ void pbkdf2_32b(const ulong starting_index,
                                   const uint4 *const __restrict__ input,
                                   uint4 *const __restrict__ output,
-                                  const uint num_tasks) {
+                                  const uint32_t num_tasks) {
   uint32_t tid = blockDim.x * blockIdx.x + threadIdx.x;
   uint32_t tnum = gridDim.x * blockDim.x;
 
@@ -160,7 +160,7 @@ static __global__ void romix(const uint32_t N, const ulong starting_index,
                              const uint4 *const __restrict__ input,
                              uint4 *const __restrict__ padcache,
                              uint4 *const __restrict__ output,
-                             const uint num_tasks) {
+                             const uint32_t num_tasks) {
   uint32_t tid = blockDim.x * blockIdx.x + threadIdx.x;
   uint32_t tnum = gridDim.x * blockDim.x;
 

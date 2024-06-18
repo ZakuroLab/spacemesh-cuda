@@ -11,7 +11,6 @@ else()
 endif()
 
 project(spacemesh-cuda LANGUAGES CXX CUDA)
-add_compile_options(-fPIC)
 
 include(FetchContent)
 
