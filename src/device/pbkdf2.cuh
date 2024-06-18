@@ -37,7 +37,7 @@ inline __device__ void keccak_block_core(scrypt_hash_state &S) {
   uint2 w;
   uint4 *s4 = S.state4;
 
-  for (uint i = 0; i < 24; i++) {
+  for (uint32_t i = 0; i < 24; i++) {
 /* theta: c = a[0,i] ^ a[1,i] ^ .. a[4,i] */
 #define CASE(D, S00, S01, S10, S11, S20, S21, S30, S31, S40, S41) \
   {                                                               \
@@ -276,7 +276,7 @@ inline __device__ void keccak_block_core(scrypt_hash_state &S) {
 
 inline __device__ void keccak_block(scrypt_hash_state &S, const uint4 *in4) {
   uint4 *s4 = S.state4;
-  uint i;
+  uint32_t i;
 
   /* absorb input */
   for (i = 0; i < 4; i++) {
@@ -295,7 +295,7 @@ inline __device__ void keccak_block(scrypt_hash_state &S, const uint4 *in4) {
 inline __device__ void keccak_block_zero(scrypt_hash_state &S,
                                          const uint4 *in4) {
   uint4 *s4 = S.state4;
-  uint i;
+  uint32_t i;
 
   /* absorb input */
   for (i = 0; i < 4; i++) {
@@ -324,7 +324,7 @@ inline __device__ void scrypt_hash_update_72(scrypt_hash_state &S,
 inline __device__ void scrypt_hash_update_80(scrypt_hash_state &S,
                                              const uint4 *in4) {
   const uchar1 *in = (const uchar1 *)in4;
-  // uint i;
+  // uint32_t i;
 
   /* handle the current data */
   keccak_block(S, in4);
@@ -345,7 +345,7 @@ inline __device__ void scrypt_hash_update_80(scrypt_hash_state &S,
 inline __device__ void scrypt_hash_update_128(scrypt_hash_state &S,
                                               const uint4 *in4) {
   const uchar1 *in = (const uchar1 *)in4;
-  // uint i;
+  // uint32_t i;
 
   /* handle the current data */
   keccak_block(S, in4);
@@ -357,7 +357,7 @@ inline __device__ void scrypt_hash_update_128(scrypt_hash_state &S,
   {
     const uint2 *in2 = (const uint2 *)in;
 
-    for (uint i = 0; i < 3; i++) {
+    for (uint32_t i = 0; i < 3; i++) {
       S.buffer4[i] = make_uint4(in2[2 * i].x, in2[2 * i].y, in2[2 * i + 1].x,
                                 in2[2 * i + 1].y);
     }
@@ -368,12 +368,12 @@ inline __device__ void scrypt_hash_update_128(scrypt_hash_state &S,
 }
 
 inline __device__ void scrypt_hash_update_4_after_72(scrypt_hash_state &S,
-                                                     uint in) {
+                                                     uint32_t in) {
   S.buffer4[0] = make_uint4(in, 0x01, 0, 0);
 }
 
 inline __device__ void scrypt_hash_update_4_after_80(scrypt_hash_state &S,
-                                                     uint in) {
+                                                     uint32_t in) {
   // assume that leftover = 2
   /* handle the previous data */
   // S->buffer4[0].zw = (uint2)(in, 0x01);
@@ -383,7 +383,7 @@ inline __device__ void scrypt_hash_update_4_after_80(scrypt_hash_state &S,
 }
 
 inline __device__ void scrypt_hash_update_4_after_128(scrypt_hash_state &S,
-                                                      uint in) {
+                                                      uint32_t in) {
   // leftover = 14
   /* handle the previous data */
   // S->buffer4[3].zw = (uint2)(in, 0x01);
@@ -410,7 +410,7 @@ inline __device__ void scrypt_hash_finish_80_after_64(scrypt_hash_state &S,
 
   keccak_block(S, S.buffer4);
 
-  for (uint i = 0; i < 4; i++) {
+  for (uint32_t i = 0; i < 4; i++) {
     hash4[i] = S.state4[i];
   }
 }
@@ -419,7 +419,7 @@ inline __device__ void scrypt_hash_finish_80_after_80_4(scrypt_hash_state &S,
                                                         uint4 *hash4) {
   // assume that leftover = 3
   // S->buffer4[0].w = 0x01; // done already in scrypt_hash_update_4_after_80
-  for (uint i = 1; i < 4; i++) {
+  for (uint32_t i = 1; i < 4; i++) {
     S.buffer4[i] = make_zero<uint4>();
   }
   // S->buffer4[4].xy = (uint2)(0, 0x80000000);
@@ -428,7 +428,7 @@ inline __device__ void scrypt_hash_finish_80_after_80_4(scrypt_hash_state &S,
 
   keccak_block(S, S.buffer4);
 
-  for (uint i = 0; i < 4; i++) {
+  for (uint32_t i = 0; i < 4; i++) {
     hash4[i] = S.state4[i];
   }
 }
@@ -443,13 +443,13 @@ inline __device__ void scrypt_hash_finish_80_after_128_4(scrypt_hash_state &S,
 
   keccak_block(S, S.buffer4);
 
-  for (uint i = 0; i < 4; i++) {
+  for (uint32_t i = 0; i < 4; i++) {
     hash4[i] = S.state4[i];
   }
 }
 
 inline __device__ void scrypt_hash_72(uint4 *hash4, const uint4 *m) {
-  for (uint i = 0; i < 4; i++) {
+  for (uint32_t i = 0; i < 4; i++) {
     hash4[i] = m[i];
   }
   // hash4[4].xy = m[4].xy;
@@ -471,7 +471,7 @@ inline __device__ void scrypt_hash_80(uint4 *hash4, const uint4 *m) {
     st.buffer4[0] = make_uint4(in2[0].x, in2[0].y, 0x01, 0);
   }
 
-  for (uint i = 1; i < 4; i++) {
+  for (uint32_t i = 1; i < 4; i++) {
     st.buffer4[i] = make_zero<uint4>();
   }
   // st.buffer4[4].xyzw = (uint4)(0, 0x80000000, 0, 0);
@@ -479,14 +479,14 @@ inline __device__ void scrypt_hash_80(uint4 *hash4, const uint4 *m) {
 
   keccak_block(st, st.buffer4);
 
-  for (uint i = 0; i < 4; i++) {
+  for (uint32_t i = 0; i < 4; i++) {
     hash4[i] = st.state4[i];
   }
 }
 
 /* hmac */
-constexpr uint KEY_0X36 = 0x36363636;
-constexpr uint KEY_0X36_XOR_0X5C = 0x6A6A6A6A;
+constexpr uint32_t KEY_0X36 = 0x36363636;
+constexpr uint32_t KEY_0X36_XOR_0X5C = 0x6A6A6A6A;
 
 inline __device__ void scrypt_hmac_init(scrypt_hmac_state &st,
                                         const uint4 *key) {
@@ -496,7 +496,7 @@ inline __device__ void scrypt_hmac_init(scrypt_hmac_state &st,
 
   /* inner = (key ^ 0x36) */
   /* h(inner || ...) */
-  for (uint i = 0; i < 4; i++) {
+  for (uint32_t i = 0; i < 4; i++) {
     pad4[i].x ^= KEY_0X36;
     pad4[i].y ^= KEY_0X36;
     pad4[i].z ^= KEY_0X36;
@@ -510,7 +510,7 @@ inline __device__ void scrypt_hmac_init(scrypt_hmac_state &st,
 
   /* outer = (key ^ 0x5c) */
   /* h(outer || ...) */
-  for (uint i = 0; i < 4; i++) {
+  for (uint32_t i = 0; i < 4; i++) {
     pad4[i].x ^= KEY_0X36_XOR_0X5C;
     pad4[i].y ^= KEY_0X36_XOR_0X5C;
     pad4[i].z ^= KEY_0X36_XOR_0X5C;
@@ -542,19 +542,19 @@ inline __device__ void scrypt_hmac_update_128(scrypt_hmac_state &st,
 }
 
 inline __device__ void scrypt_hmac_update_4_after_72(scrypt_hmac_state &st,
-                                                     uint m) {
+                                                     uint32_t m) {
   /* h(inner || m...) */
   scrypt_hash_update_4_after_72(st.inner, m);
 }
 
 inline __device__ void scrypt_hmac_update_4_after_80(scrypt_hmac_state &st,
-                                                     uint m) {
+                                                     uint32_t m) {
   /* h(inner || m...) */
   scrypt_hash_update_4_after_80(st.inner, m);
 }
 
 inline __device__ void scrypt_hmac_update_4_after_128(scrypt_hmac_state &st,
-                                                      uint m) {
+                                                      uint32_t m) {
   /* h(inner || m...) */
   scrypt_hash_update_4_after_128(st.inner, m);
 }
@@ -583,7 +583,7 @@ inline __device__ void scrypt_hmac_finish_32B(scrypt_hmac_state &st,
 
 inline __device__ void scrypt_copy_hmac_state_128B(
   scrypt_hmac_state &dest, const scrypt_hmac_state &src) {
-  for (uint i = 0; i < 12; i++) {
+  for (uint32_t i = 0; i < 12; i++) {
     dest.inner.state4[i] = src.inner.state4[i];
   }
   // dest->inner.state4[12].xy = src->inner.state4[12].xy;
@@ -594,7 +594,7 @@ inline __device__ void scrypt_copy_hmac_state_128B(
   dest.inner.buffer4[0].x = src.inner.buffer4[0].x;
   dest.inner.buffer4[0].y = src.inner.buffer4[0].y;
 
-  for (uint i = 0; i < 12; i++) {
+  for (uint32_t i = 0; i < 12; i++) {
     dest.outer.state4[i] = src.outer.state4[i];
   }
   // dest->outer.state4[12].xy = src->outer.state4[12].xy;
@@ -602,8 +602,8 @@ inline __device__ void scrypt_copy_hmac_state_128B(
   dest.outer.state4[12].y = src.outer.state4[12].y;
 }
 
-constexpr uint be1 = 0x01000000;
-constexpr uint be2 = 0x02000000;
+constexpr uint32_t be1 = 0x01000000;
+constexpr uint32_t be2 = 0x02000000;
 
 inline __device__ void scrypt_pbkdf2_128B(const uint4 *password, uint4 *out4) {
   scrypt_hmac_state hmac_pw, work;
@@ -626,7 +626,7 @@ inline __device__ void scrypt_pbkdf2_128B(const uint4 *password, uint4 *out4) {
   scrypt_hmac_update_4_after_72(work, be1);
   scrypt_hmac_finish_128B(work, ti4);
 
-  for (uint i = 0; i < 4; i++) {
+  for (uint32_t i = 0; i < 4; i++) {
     out4[i] = ti4[i];
   }
 
@@ -636,7 +636,7 @@ inline __device__ void scrypt_pbkdf2_128B(const uint4 *password, uint4 *out4) {
   scrypt_hmac_update_4_after_72(hmac_pw, be2);
   scrypt_hmac_finish_128B(hmac_pw, ti4);
 
-  for (uint i = 0; i < 4; i++) {
+  for (uint32_t i = 0; i < 4; i++) {
     out4[i + 4] = ti4[i];
   }
 }
@@ -661,7 +661,7 @@ inline __device__ void scrypt_pbkdf2_32B(const uint4 *password,
   scrypt_hmac_update_4_after_128(hmac_pw, be1);
   scrypt_hmac_finish_32B(hmac_pw, ti4);
 
-  for (uint i = 0; i < 2; i++) {
+  for (uint32_t i = 0; i < 2; i++) {
     out4[i] = ti4[i];
   }
 }

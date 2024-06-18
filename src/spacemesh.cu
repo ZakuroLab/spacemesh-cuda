@@ -106,7 +106,7 @@ uint32_t spacemesh_get_max_task_num(uint32_t device_idx) {
   return Config::GetDefault().GetDeviceContext(device_idx).max_task_num;
 }
 
-void spacemesh_scrypt(uint32_t device_idx, const uint64_t starting_index,
+bool spacemesh_scrypt(uint32_t device_idx, const uint64_t starting_index,
                       const uint32_t* input, const uint32_t task_num,
                       uint32_t* output) {
   auto& ctx = Config::GetDefault().GetDeviceContext(device_idx);
@@ -114,8 +114,9 @@ void spacemesh_scrypt(uint32_t device_idx, const uint64_t starting_index,
   UNUSED(switcher);
 
   if (task_num > ctx.max_task_num) {
-    throw std::invalid_argument("task_num must less " +
-                                std::to_string(ctx.max_task_num));
+    return false;
+//    throw std::invalid_argument("task_num must less " +
+//                                std::to_string(ctx.max_task_num));
   }
 
   CudaDeviceMem<uint4> d_output(task_num * 2);
@@ -132,4 +133,5 @@ void spacemesh_scrypt(uint32_t device_idx, const uint64_t starting_index,
           d_output.Ptr());
   CHECK(cudaMemcpy(output, d_output.Ptr(), task_num * OUTPUT_MEM_FOR_ONE_TASK,
                    cudaMemcpyDeviceToHost));
+  return true;
 }
