@@ -36,6 +36,5 @@ fn main() {
     }
     println!("cargo:rustc-link-search=native={}", cuda_lib_path.display());
     println!("cargo:rustc-link-lib=static=cudart_static");
-    println!("cargo:rustc-link-lib=stdc++");
     println!("cargo:rustc-link-lib=static=spacemesh-cuda");
 }
